@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusConnect — Student Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast"></div>
+
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-copy">
+      <div class="brand"><span class="brand-mark">C</span> CampusConnect</div>
+      <h1>Your campus.<br><span>Your people.</span></h1>
+      <p>A simple place to share ideas, find study partners, discover events and stay connected with campus life.</p>
+      <div class="auth-points">
+        <div>✦ Student-first community</div>
+        <div>✦ Events & study partners</div>
+        <div>✦ Private, secure profiles</div>
+      </div>
+    </div>
+    <div class="auth-card">
+      <div class="tabs">
+        <button class="tab active" data-auth="login">Login</button>
+        <button class="tab" data-auth="signup">Create account</button>
+      </div>
+      <form id="authForm">
+        <div id="nameField" class="field hidden">
+          <label>Full name</label><input id="authName" type="text" placeholder="Ahmed Khan">
+        </div>
+        <div class="field">
+          <label>Email</label><input id="authEmail" type="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label>Password</label><input id="authPassword" type="password" placeholder="••••••••" required minlength="6">
+        </div>
+        <button class="btn primary full" type="submit" id="authSubmit">Login</button>
+      </form>
+      <p class="auth-note">Use your real Supabase project credentials in <b>app.js</b>.</p>
+    </div>
+  </section>
+
+  <div id="app" class="hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">C</span> CampusConnect</div>
+      <nav>
+        <button class="nav-item active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+        <button class="nav-item" data-page="posts">◈ <span>Community</span></button>
+        <button class="nav-item" data-page="events">◷ <span>Events</span></button>
+        <button class="nav-item" data-page="partners">♧ <span>Study Partners</span></button>
+        <button class="nav-item" data-page="polls">◉ <span>Polls</span></button>
+        <button class="nav-item" data-page="notifications">♢ <span>Notifications <i id="notifCount"></i></span></button>
+        <button class="nav-item admin-link hidden" data-page="admin">▦ <span>Admin Panel</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button id="themeBtn" class="nav-item">☼ <span>Toggle theme</span></button>
+        <button id="logoutBtn" class="nav-item">↪ <span>Logout</span></button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="mobileMenu" class="icon-btn">☰</button>
+        <div class="top-search"><span>⌕</span><input id="globalSearch" placeholder="Search CampusConnect..."></div>
+        <div class="top-user" id="topUser"></div>
+      </header>
+
+      <div class="page-wrap">
+        <section id="dashboardPage" class="page active">
+          <div class="hero">
+            <div>
+              <div class="eyebrow">MONDAY • CAMPUS LIFE</div>
+              <h2>Welcome, <span id="welcomeName">Student</span> 👋</h2>
+              <p>Everything happening around your student community, in one place.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn light" data-modal="postModal">+ Create post</button>
+              <button class="btn outline-light" data-modal="eventModal">Create event</button>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><span>Community posts</span><strong id="statPosts">0</strong><small>shared by students</small></div>
+            <div class="stat-card"><span>Upcoming events</span><strong id="statEvents">0</strong><small>don't miss out</small></div>
+            <div class="stat-card"><span>Study partners</span><strong id="statPartners">0</strong><small>ready to connect</small></div>
+            <div class="stat-card"><span>Notifications</span><strong id="statNotifs">0</strong><small>new activity</small></div>
+          </div>
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-head"><div><h3>Latest announcements</h3><p>From the campus team</p></div></div>
+              <div id="announcementList" class="list"></div>
+            </div>
+            <div class="panel quick-panel">
+              <div class="panel-head"><div><h3>Quick actions</h3><p>Get things moving</p></div></div>
+              <button class="quick-btn" data-modal="postModal"><span>✎</span><div><b>Share something</b><small>Post to the community</small></div>→</button>
+              <button class="quick-btn" data-page="partners"><span>♧</span><div><b>Find a study partner</b><small>Learn together</small></div>→</button>
+              <button class="quick-btn" data-modal="pollModal"><span>◉</span><div><b>Start a poll</b><small>Ask your campus</small></div>→</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>What's happening</h3><p>Latest community posts</p></div><button class="text-btn" data-page="posts">View all →</button></div>
+            <div id="dashboardPosts" class="post-grid"></div>
+          </div>
+        </section>
+
+        <section id="postsPage" class="page">
+          <div class="section-head"><div><div class="eyebrow">COMMUNITY</div><h2>Student community</h2><p>Ideas, questions and updates from your campus.</p></div><button class="btn primary" data-modal="postModal">+ New post</button></div>
+          <div class="toolbar"><div class="searchbox">⌕ <input id="postSearch" placeholder="Search posts..."></div></div>
+          <div id="postsList" class="post-grid"></div>
+        </section>
+
+        <section id="eventsPage" class="page">
+          <div class="section-head"><div><div class="eyebrow">CAMPUS LIFE</div><h2>Events</h2><p>Find something worth showing up for.</p></div><button class="btn primary" data-modal="eventModal">+ Create event</button></div>
+          <div class="toolbar"><div class="searchbox">⌕ <input id="eventSearch" placeholder="Search events..."></div><select id="eventFilter"><option value="all">All events</option><option value="approved">Approved</option><option value="mine">My events</option></select></div>
+          <div id="eventsList" class="event-grid"></div>
+        </section>
+
+        <section id="partnersPage" class="page">
+          <div class="section-head"><div><div class="eyebrow">LEARN TOGETHER</div><h2>Study partners</h2><p>Find people who match the way you learn.</p></div><button class="btn primary" data-modal="partnerModal">+ Add profile</button></div>
+          <div class="filter-row">
+            <input id="partnerSubject" placeholder="Subject e.g. JavaScript">
+            <input id="partnerSkill" placeholder="Skill e.g. Frontend">
+            <select id="partnerLevel"><option value="">Any experience</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+            <button class="btn dark" id="partnerFilterBtn">Search</button>
+          </div>
+          <div id="partnersList" class="partner-grid"></div>
+        </section>
+
+        <section id="pollsPage" class="page">
+          <div class="section-head"><div><div class="eyebrow">YOUR VOICE</div><h2>Campus polls</h2><p>Ask questions. Vote. See what students think.</p></div><button class="btn primary" data-modal="pollModal">+ Create poll</button></div>
+          <div id="pollsList" class="poll-grid"></div>
+        </section>
+
+        <section id="notificationsPage" class="page">
+          <div class="section-head"><div><div class="eyebrow">UPDATES</div><h2>Notifications</h2><p>Stay on top of activity around you.</p></div><button class="text-btn" id="readAllBtn">Mark all read</button></div>
+          <div id="notificationsList" class="notification-list"></div>
+        </section>
+
+        <section id="adminPage" class="page">
+          <div class="section-head"><div><div class="eyebrow">ADMIN</div><h2>Admin control center</h2><p>Manage your student community.</p></div></div>
+          <div class="stats-grid">
+            <div class="stat-card"><span>Total users</span><strong id="adminUsers">0</strong></div>
+            <div class="stat-card"><span>Total posts</span><strong id="adminPosts">0</strong></div>
+            <div class="stat-card"><span>Total events</span><strong id="adminEvents">0</strong></div>
+            <div class="stat-card"><span>Reports</span><strong id="adminReports">0</strong></div>
+          </div>
+          <div class="admin-tabs">
+            <button class="active" data-admin-tab="users">Users</button>
+            <button data-admin-tab="posts">Posts</button>
+            <button data-admin-tab="events">Events</button>
+            <button data-admin-tab="announcements">Announcements</button>
+          </div>
+          <div id="adminContent" class="panel admin-content"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modals -->
+  <div id="postModal" class="modal-wrap"><div class="modal"><button class="modal-close">×</button><h3>Create a post</h3><p>Share something useful with your campus.</p><form id="postForm"><input id="postTitle" placeholder="Post title" required><textarea id="postDesc" placeholder="What's on your mind?" required></textarea><input id="postImage" type="file" accept="image/*"><button class="btn primary full">Publish post</button></form></div></div>
+  <div id="eventModal" class="modal-wrap"><div class="modal"><button class="modal-close">×</button><h3>Create an event</h3><p>Bring students together.</p><form id="eventForm"><input id="eventTitle" placeholder="Event title" required><textarea id="eventDesc" placeholder="Description" required></textarea><div class="form-row"><input id="eventDate" type="date" required><input id="eventTime" type="time" required></div><input id="eventLocation" placeholder="Location" required><input id="eventImage" type="file" accept="image/*"><button class="btn primary full">Create event</button></form></div></div>
+  <div id="partnerModal" class="modal-wrap"><div class="modal"><button class="modal-close">×</button><h3>Study partner profile</h3><p>Tell people how you learn.</p><form id="partnerForm"><input id="partnerName" placeholder="Name" required><input id="partnerSubjects" placeholder="Subjects (comma separated)" required><input id="partnerSkills" placeholder="Skills (comma separated)" required><select id="partnerExperience" required><option value="">Experience level</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><input id="partnerAvailability" placeholder="Availability e.g. Weekdays 6–9 PM" required><textarea id="partnerIntro" placeholder="Short introduction" required></textarea><button class="btn primary full">Save profile</button></form></div></div>
+  <div id="pollModal" class="modal-wrap"><div class="modal"><button class="modal-close">×</button><h3>Create a poll</h3><p>Give your campus something to vote on.</p><form id="pollForm"><input id="pollQuestion" placeholder="Your question" required><input class="poll-option" placeholder="Option 1" required><input class="poll-option" placeholder="Option 2" required><input class="poll-option" placeholder="Option 3"><input class="poll-option" placeholder="Option 4"><button class="btn primary full">Publish poll</button></form></div></div>
+  <div id="profileModal" class="modal-wrap"><div class="modal"><button class="modal-close">×</button><h3>Your profile</h3><form id="profileForm"><input id="profileName" placeholder="Full name" required><input id="profileCourse" placeholder="Course / department"><textarea id="profileBio" placeholder="Short bio"></textarea><input id="profileImage" type="file" accept="image/*"><button class="btn primary full">Save changes</button></form></div></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
